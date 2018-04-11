@@ -1,0 +1,13 @@
+---
+- hosts: masters[0]
+  tasks:
+    - name: Gather debug info
+      shell: |
+        kubeconfig="/etc/origin/master/admin.kubeconfig"
+        oc login -u system:admin --insecure-skip-tls-verify=true --config=$kubeconfig
+        echo "===== DEBUG: POD DESCRIBE"
+        oc get pods -n app-storage --no-headers | grep glusterfs-storage | awk '{print $1}' | xargs oc describe po -n app-storage
+        echo "===== DEBUG: MESSAGES LOG"
+        cat /var/log/messages
+        #echo "===== DEBUG: GLUSTERD LOG"
+        #cat /var/log/glusterfs/glusterd.log

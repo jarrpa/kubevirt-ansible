@@ -149,7 +149,21 @@ main() {
         -i "$inventory_file" \
         -v \
         -e "${args[*]}" \
-        playbooks/automation/check-patch.yml
+        playbooks/automation/check-patch.yml || (
+
+    echo "START DEBUG"
+
+    ansible-playbook \
+        -u root \
+        -i "$inventory_file" \
+        -v \
+        -e "${args[*]}" \
+        playbooks/automation/debug.yml
+
+    echo "END DEBUG"
+    exit 1
+
+    )
 
     # Deprovision resources
     ansible-playbook \
